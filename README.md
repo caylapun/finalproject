@@ -1,1 +1,1 @@
-# finalproject
+# stat 184 final project
