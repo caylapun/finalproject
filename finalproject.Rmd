@@ -46,8 +46,8 @@ D1980 <- table_1980[[1]]
 D1980 <- 
   D1980 %>% 
   drop_na() %>%
-  rename(year = 'Year[I]', track = Record, artist = 'Artist(s)') %>%
-  mutate(year = gsub(pattern = "(\\[\\d+\\])", replacement = "", x = year)) %>%
+  rename(year = 'Year[I]', track = Record, artist = 'Artist(s)') %>% 
+  mutate(year = gsub(pattern = "(\\[\\d+\\])", replacement = "", x = year)) %>% 
   mutate(decade = "1980s")
 
 ```
@@ -71,9 +71,9 @@ D1990 <- table_1990[[1]]
 D1990 <- 
   D1990 %>% 
   drop_na() %>%
-  rename(year = 'Year[I]', track = Record, artist = 'Artist(s)') %>%
-  mutate(year = gsub(pattern = "(\\[\\d+\\])", replacement = "", x = year)) %>%
-  mutate(decade = "1990s")
+  rename(year = 'Year[I]', track = Record, artist = 'Artist(s)') %>% #removing header footnotes and renaming columns
+  mutate(year = gsub(pattern = "(\\[\\d+\\])", replacement = "", x = year)) %>% #using hte gsub function to regex expression to remove footnotes from rows in year
+  mutate(decade = "1990s") #creating the decacde column and defining its value
 ```
 
 
@@ -124,6 +124,7 @@ D2010 <-
   mutate(decade = "2010s")
 ```
 
+#### For each decade, I had created a unique regular expression that would pull out the necessary decade information needed from the 'webpage.' I then created a table using that unique regex value and further assigned that table to a data frame. The data wrangling portion of the data frame included renaming columns, removing footnotes and entries that did not have a value (na), and creating a decade column. The function I used to remove the footnotes in each row of the year is gsub. The "gsub" function will replace all matches of a string. So the 'pattern' variable of gsub will look for that specific string or in this scenario, regular expression, and select that value. The next variable in the gsub function is 'replacement' and this is the string for replacement, and the last variable is 'x' and this is the column in which the gsub will search for the pattern and replace its matches. 
 
 * all decades
 ```{r}
@@ -160,12 +161,15 @@ AllWords_Final <-
          word != 'uh',word != 'la',word !='hol') 
 ```
 
+#### AllWords_Final is the final dataframe, words of each song with the stop words and additional words filtered out. The first dataframe created above, 'Alllyrics' is essentially creating a new column that is of type 'lyric.' The 'add_genius' function is specific towards artist and album/tracks and it creates the lyric column. The 'AllWords' data frame is splitting the lyrics column into 'tokens', in this case words, by using the 'unnnest_tokens' function and ensuring that each token has its own row. AllWords_stopwords is the dataframe in which the stop words were filtered out. This was done by using the 'anti_join' function and unmatching its values by the 'word' column. The last dataframe created 'AllWords_Final" uses the 'AllWords_stopwords' data frame and futher filters out the additional 11 words from the word column. 
 
 # **GRAPHS**
 
 #### 1. 
 
 * data prep for graph 1
+  + For this graph, my thought process was that I wanted to greate a dataframe that gathered and summed up the number of words per song. I used the 'AllWords' dataframe and created a new column called 'num' and assigned each value to the integer 1. This is to essentially add up the number of rows, which each had a single word, for each song. I then ensured that the decade column was of type character by using the mutate function and reassigning the decade column to be of type character by using 'as.character.' I then grouped by the necessary columns and used the summarise data verb to reassign the num column to the sum of the 1s. This gave me the number of words per song. I would then use this new dataframe and graph it by the decade variable and this will give me the words per song per decade. 
+
 ```{r}
 #words per song dataframe ->idea adding every row and group by year
 Wps <-
@@ -177,6 +181,7 @@ Wps <-
   select(year, num, track, artist)
 
 ```
+
 * graph: 
 ```{r}
 ggplot(Wps) +
@@ -189,6 +194,7 @@ labs(x = "Words per Song", y = "Decade", title = "Boxplots of Words per Grammy N
 
 #### 2. 
 * graph: 
+  + My approach on this graph was pretty simple. I wanted to use the dataframe that filtered out all the stopwords and additional words. I then used the 'freq_terms' function to find the most frequently occurring terms in the 'word' column/vector. 
 ```{r}
 Top_all <- freq_terms(AllWords_Final$word, 10, at.least=3) #top 10 words overall
 
@@ -202,6 +208,7 @@ ggplot(Top_all) +
 #### 3.
 
 * data prep for graph 3
+  + My approach on this graph was to filter out the 'AllWords_Final' dataframe by decade and theng ather the most frequent terms from each decade. I will then create a unique graph for each dedcade and assign it to an object. In the end, after installing the necessary library, I used 'grid.arrange' to combine the object graph assigned with each of the four decades.
 ```{r}
 #1980
 Decade_1980 <-
@@ -272,6 +279,7 @@ graph3
 
 #### 4.
 * data prep for graph 4
+  + I first approached this graph/scenario by joining all of the words in each decade (using the previous dataframes created in the graph before) and assigned it to a new dataframe called 'WordSentiments.' I then used a left join with the table 'sentiments' to get the sentiments in the 'WordSentiments' dataframe. I used a left join because I wanted to keep all of the data in the 'left table' (WordSentiments), while also matching up the word sentiments that were given. There are a few words in 'WordSentiments' that were not assigned a sentiment from the 'sentiments' dataframe, so therefore I used 'drop_na' to remove the words that did not have a sentiment value. I then assigned the values in the sentiment column to an integer, if the word had a positive sentiment, it would be a 1, and if it was anegative sentiment, the value would be 0. I then reassigned the 'WordSentiments' dataframe and ensured that the sentiment column was of type integer by using 'as.integer' and also created a new column that would sum up the number of 1s and 0s to get the net sentiment value. 
 ```{r}
 #combining decades
 WordSentiments <-
@@ -309,6 +317,7 @@ graph4
 
 #### 5.
 * data prep for graph 5
+  + The dataprep for this graph was relatively simple. I had just used the same dataframe from the previous graph and created a new column called 'mean' which would find the mean of the sentiments. I also wanted to make sure that the decade column was of type character and did so by using 'as.character.' 
 ```{r}
 MeanSentiments <-
   WordSentiments %>%
@@ -329,6 +338,7 @@ graph5
 ```
 
 #### 6.
+  + The first block of code below is my data prep for graph 6. I essentially used the same dataframe as the previous two graphs and ensured that the year column was of type integer by using 'as.integer.' I then created a plot using ggplot and added a 'geom_smooth" to get the linear model fit line. In 'geom_smooth,' I used 'method' to ensure the type of line that I wanted, which is "lm" (stands for linear model) then I used 'color' to get the color of the line, 'se' was to remove confidence band that was surrounding the lineaer model, and 'fullrange' was used to ensure that the line went through the entire graph instead of having each decade with getting their own regression line. 
 ```{r}
 WordSentiments <-
   WordSentiments %>%
@@ -344,3 +354,4 @@ graph6 <- ggplot(WordSentiments) +
 graph6
 ```
 
+# **ZOOOM presentation link** [click here](https://psu.zoom.us/rec/play/WvP0aIVFm74B8jUkQ-gXbpLHDY2ofwZM9fGkMd3SaDWS8MQepCfjDo1jbBcoTWe3oxSfjevMC_euZfgj.dRqS57oPSHEYuX-S?startTime=1607932118000&_x_zm_rtaid=B1EIOCpNSfS0DZWUDVe0LQ.1607959366223.3b83876f543e324edb316fb3040568ea&_x_zm_rhtaid=331)
