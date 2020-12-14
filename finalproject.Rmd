@@ -354,4 +354,5 @@ graph6 <- ggplot(WordSentiments) +
 graph6
 ```
 
-# **ZOOOM presentation link** [click here](https://psu.zoom.us/rec/play/WvP0aIVFm74B8jUkQ-gXbpLHDY2ofwZM9fGkMd3SaDWS8MQepCfjDo1jbBcoTWe3oxSfjevMC_euZfgj.dRqS57oPSHEYuX-S?startTime=1607932118000&_x_zm_rtaid=B1EIOCpNSfS0DZWUDVe0LQ.1607959366223.3b83876f543e324edb316fb3040568ea&_x_zm_rhtaid=331)
+## [ZOOM presentation link](https://psu.zoom.us/rec/play/WvP0aIVFm74B8jUkQ-gXbpLHDY2ofwZM9fGkMd3SaDWS8MQepCfjDo1jbBcoTWe3oxSfjevMC_euZfgj.dRqS57oPSHEYuX-S?startTime=1607932118000&_x_zm_rtaid=B1EIOCpNSfS0DZWUDVe0LQ.1607959366223.3b83876f543e324edb316fb3040568ea&_x_zm_rhtaid=331)
+## [Github Repository](https://github.com/caylapun/finalproject) 
